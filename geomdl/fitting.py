@@ -91,13 +91,17 @@ def interpolate_surface(points, size_u, size_v, degree_u, degree_v, **kwargs):
         pts = [points[v + (size_v * u)] for u in range(size_u)]
         matrix_a = _build_coeff_matrix(degree_u, kv_u, uk, pts)
         ctrlpts_r += linalg.lu_solve(matrix_a, pts)
+        print("\r", "Progress v: ", v+1, "/", size_v, end="", sep = '') #progress print
 
     # Do global interpolation on the v-direction
     ctrlpts = []
+    print("\n") #progress print
     for u in range(size_u):
         pts = [ctrlpts_r[u + (size_u * v)] for v in range(size_v)]
         matrix_a = _build_coeff_matrix(degree_v, kv_v, vl, pts)
         ctrlpts += linalg.lu_solve(matrix_a, pts)
+        print("\r", "Progress u: ", u+1, "/", size_u, end="", sep = '') #progress print
+    print("\n")  # progress print
 
     # Generate B-spline surface
     surf = BSpline.Surface()
